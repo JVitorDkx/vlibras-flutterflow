@@ -3,38 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VLibras</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: transparent; }
     </style>
 </head>
 <body>
-    
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
     </div>
-    
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-        // 1. Pega a palavra que o FlutterFlow enviou pela URL (?w=palavra)
         const urlParams = new URLSearchParams(window.location.search);
-        const palavra = urlParams.get('w') || 'Olá'; 
-        
-        // 2. Inicia o boneco
+        const palavra = urlParams.get('w') || 'Olá';
         new window.VLibras.Widget('https://vlibras.gov.br/app');
-        
-        // 3. Espera o plugin carregar e manda traduzir a palavra
         window.onload = function() {
             setTimeout(function() {
                 if (window.VLibras && window.VLibras.Widget.instance) {
                     window.VLibras.Widget.instance.translate(palavra);
                 }
-            }, 5000); // 5 segundos para garantir que o boneco apareceu
+            }, 5000);
         };
     </script>
-
 </body>
 </html>
