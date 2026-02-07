@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: transparent; }
+        body, html { margin: 0; padding: 0; height: 100vh; background: transparent; }
     </style>
 </head>
 <body>
@@ -14,15 +13,9 @@
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const palavra = urlParams.get('w') || 'Olá';
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+        // Inicia o widget sem tentar traduzir nada ainda
         window.onload = function() {
-            setTimeout(function() {
-                if (window.VLibras && window.VLibras.Widget.instance) {
-                    window.VLibras.Widget.instance.translate(palavra);
-                }
-            }, 5000);
+            new window.VLibras.Widget('https://vlibras.gov.br/app');
         };
     </script>
 </body>
