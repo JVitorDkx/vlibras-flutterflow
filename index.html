@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>body, html { margin: 0; padding: 0; background: transparent; overflow: hidden; }</style>
+    <meta charset="UTF-8">
+    <style>body, html { margin: 0; padding: 0; height: 100%; background: transparent; overflow: hidden; }</style>
 </head>
 <body>
-  <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-      <div class="vw-plugin-top-wrapper"></div>
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
     </div>
-  </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        // Inicia o VLibras
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
 
-  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-  <script>
-    // 1. Inicia o widget (como você já fazia)
-    const widget = new window.VLibras.Widget('https://vlibras.gov.br/app');
+        window.onload = function() {
+            // Lógica para ler a palavra da URL: ?w=suapalavra
+            const params = new URLSearchParams(window.location.search);
+            const palavra = params.get('w');
 
-    // 2. PEGA A PALAVRA DA URL (Isso aqui é o segredo)
-    const urlParams = new URLSearchParams(window.location.search);
-    const palavraParaSinalizar = urlParams.get('w');
-
-    // 3. Manda traduzir assim que o widget estiver pronto
-    window.onload = function() {
-        if (palavraParaSinalizar) {
-            setTimeout(() => {
-                window.VLibras.Widget.instance.translate(palavraParaSinalizar);
-            }, 5000); // Espera 5 segundos para o boneco carregar antes de falar
-        }
-    };
-  </script>
+            if (palavra) {
+                // Aguarda o carregamento do boneco para sinalizar
+                setTimeout(() => {
+                    if (window.VLibras && window.VLibras.Widget.instance) {
+                        window.VLibras.Widget.instance.translate(palavra);
+                    }
+                }, 5000); 
+            }
+        };
+    </script>
 </body>
 </html>
