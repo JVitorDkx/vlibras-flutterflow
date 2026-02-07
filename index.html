@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VLibras</title>
+    <style>body, html { margin: 0; padding: 0; background: transparent; overflow: hidden; }</style>
 </head>
 <body>
-    <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
     </div>
-    
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        // Pega a palavra da URL (?w=palavra)
-        const urlParams = new URLSearchParams(window.location.search);
-        const palavra = urlParams.get('w') || 'Olá';
+  </div>
 
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    // 1. Inicia o widget (como você já fazia)
+    const widget = new window.VLibras.Widget('https://vlibras.gov.br/app');
 
-        // Só traduz se o widget carregar com sucesso
-        window.onload = function() {
+    // 2. PEGA A PALAVRA DA URL (Isso aqui é o segredo)
+    const urlParams = new URLSearchParams(window.location.search);
+    const palavraParaSinalizar = urlParams.get('w');
+
+    // 3. Manda traduzir assim que o widget estiver pronto
+    window.onload = function() {
+        if (palavraParaSinalizar) {
             setTimeout(() => {
-                if (window.VLibras && window.VLibras.Widget.instance) {
-                    window.VLibras.Widget.instance.translate(palavra);
-                }
-            }, 5000);
-        };
-    </script>
+                window.VLibras.Widget.instance.translate(palavraParaSinalizar);
+            }, 5000); // Espera 5 segundos para o boneco carregar antes de falar
+        }
+    };
+  </script>
 </body>
 </html>
