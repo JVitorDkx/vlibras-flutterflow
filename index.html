@@ -1,37 +1,79 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VLibras</title>
+  <meta charset="UTF-8" />
+  <title>VLibras WebView</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+  </style>
 </head>
 <body>
-    <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+
+  <!-- Container obrigatório -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
     </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-        // Carrega o widget normalmente
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </div>
 
-        // Função para traduzir automaticamente
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const palavra = urlParams.get('w');
+  <!-- Script oficial -->
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 
-            if (palavra) {
-                // Tenta traduzir a cada 1 segundo até o widget estar pronto
-                const checkExist = setInterval(function() {
-                   if (window.VLibras && window.VLibras.Widget.instance && window.VLibras.Widget.instance.isLoaded) {
-                      window.VLibras.Widget.instance.translate(palavra);
-                      clearInterval(checkExist);
-                   }
-                }, 1000);
-            }
-        };
-    </script>
+  <script>
+    /**
+     * Aguarda o VLibras estar TOTALMENTE disponível
+     */
+    function waitForVLibras(callback, timeout = 10000) {
+      const start = Date.now();
+
+      const check = setInterval(() => {
+        if (
+          window.VLibras &&
+          window.VLibras.Widget &&
+          window.VLibras.Widget.instance &&
+          typeof window.VLibras.Widget.instance.translate === "function"
+        ) {
+          clearInterval(check);
+          callback();
+        }
+
+        if (Date.now() - start > timeout) {
+          clearInterval(check);
+          console.error("VLibras não carregou a tempo.");
+        }
+      }, 200);
+    }
+
+    /**
+     * Captura palavra da URL (?w=palavra)
+     */
+    function getWordFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("w");
+    }
+
+    /**
+     * Inicialização segura
+     */
+    window.onload = () => {
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
+
+      waitForVLibras(() => {
+        const palavra = getWordFromURL();
+        if (palavra) {
+          console.log("Traduzindo:", palavra);
+          window.VLibras.Widget.instance.translate(palavra);
+        }
+      });
+    };
+  </script>
+
 </body>
 </html>
