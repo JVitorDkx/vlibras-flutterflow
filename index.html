@@ -1,36 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <style>body, html { margin: 0; padding: 0; height: 100%; background: transparent; overflow: hidden; }</style>
+    <title>VLibras</title>
 </head>
 <body>
-  <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-      <div class="vw-plugin-top-wrapper"></div>
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
     </div>
-  </div>
-
-  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-  <script>
-    // 1. Inicia o boneco normalmente (o que você já faz)
-    new window.VLibras.Widget('https://vlibras.gov.br/app');
-
-    // 2. O "Ouvido": Pega o que o FlutterFlow enviar na URL (?w=palavra)
-    const urlParams = new URLSearchParams(window.location.search);
-    const palavraEnviada = urlParams.get('w');
-
-    // 3. Se houver uma palavra, ele sinaliza assim que carregar
-    window.onload = function() {
-        if (palavraEnviada) {
-            setTimeout(() => {
-                if (window.VLibras && window.VLibras.Widget.instance) {
-                    window.VLibras.Widget.instance.translate(palavraEnviada);
-                }
-            }, 5000); // Espera 5 segundos para o boneco carregar
-        }
-    };
-  </script>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 </body>
 </html>
