@@ -1,79 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>VLibras WebView</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>VLibras Dinâmico</title>
 </head>
 <body>
 
-  <!-- Container obrigatório -->
-  <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-      <div class="vw-plugin-top-wrapper"></div>
-    </div>
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
   </div>
+</div>
 
-  <!-- Script oficial -->
-  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 
-  <script>
-    /**
-     * Aguarda o VLibras estar TOTALMENTE disponível
-     */
-    function waitForVLibras(callback, timeout = 10000) {
-      const start = Date.now();
+<script>
+  // captura ?w=palavra
+  function getWordFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("w");
+  }
 
-      const check = setInterval(() => {
-        if (
-          window.VLibras &&
-          window.VLibras.Widget &&
-          window.VLibras.Widget.instance &&
-          typeof window.VLibras.Widget.instance.translate === "function"
-        ) {
-          clearInterval(check);
-          callback();
-        }
+  // espera o CANVAS do avatar existir
+  function waitForAvatar(callback, timeout = 15000) {
+    const start = Date.now();
 
-        if (Date.now() - start > timeout) {
-          clearInterval(check);
-          console.error("VLibras não carregou a tempo.");
-        }
-      }, 200);
+    const interval = setInterval(() => {
+      const canvas = document.querySelector(
+        ".vw-plugin-top-wrapper canvas"
+      );
+
+      if (canvas && window.VLibras?.Widget?.instance) {
+        clearInterval(interval);
+        callback();
+      }
+
+      if (Date.now() - start > timeout) {
+        clearInterval(interval);
+        console.error("Avatar VLibras não inicializou");
+      }
+    }, 300);
+  }
+
+  // inicialização padrão
+  new window.VLibras.Widget("https://vlibras.gov.br/app");
+
+  waitForAvatar(() => {
+    const palavra = getWordFromURL();
+    if (palavra) {
+      console.log("Traduzindo:", palavra);
+      window.VLibras.Widget.instance.translate(palavra);
     }
-
-    /**
-     * Captura palavra da URL (?w=palavra)
-     */
-    function getWordFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("w");
-    }
-
-    /**
-     * Inicialização segura
-     */
-    window.onload = () => {
-      new window.VLibras.Widget("https://vlibras.gov.br/app");
-
-      waitForVLibras(() => {
-        const palavra = getWordFromURL();
-        if (palavra) {
-          console.log("Traduzindo:", palavra);
-          window.VLibras.Widget.instance.translate(palavra);
-        }
-      });
-    };
-  </script>
+  });
+</script>
 
 </body>
 </html>
